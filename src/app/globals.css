@@ -211,3 +211,14 @@
   direction: ltr;
   text-align: right;
 }
+
+/* Mobile fixes */
+@media (max-width: 767px) {
+  body {
+    overflow-x: hidden;
+    width: 100vw;
+  }
+  body.sidebar-open {
+    overflow: hidden !important;
+  }
+}

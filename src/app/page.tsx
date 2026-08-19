@@ -107,18 +107,18 @@ export default function HomePage() {
   const sidebarWidth = sidebarCollapsed ? 68 : 260;
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-[#071A2B]">
+    <div className="relative min-h-screen w-full overflow-x-hidden bg-[#071A2B]">
       <AnimatedBackground />
       <Sidebar />
       <main
         ref={mainRef}
-        className="relative z-10 min-h-screen flex flex-col transition-[margin] duration-300"
+        className="relative z-10 min-h-screen flex flex-col w-full transition-[margin] duration-300"
         style={{
           marginLeft: isDesktop ? sidebarWidth : 0,
         }}
       >
         <Header />
-        <div className="flex-1 p-3 sm:p-4 md:p-6 overflow-y-auto scrollbar-thin">
+        <div className="flex-1 w-full min-w-0 p-3 sm:p-4 md:p-6 overflow-y-auto scrollbar-thin">
           {ActivePanel && activePage === 'strategy-builder'
             ? <StrategyBuilderPanel key={strategyBuilderKey} />
             : <ActivePanel />
