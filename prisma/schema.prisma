@@ -1,0 +1,201 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  username  String?  @unique
+  avatar    String?
+  bio       String?
+  locale    String   @default("en")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  strategies         Strategy[]
+  backtests          Backtest[]
+  strategyVersions   StrategyVersion[]
+  comments           StrategyComment[]
+  likes              StrategyLike[]
+  following          StrategyFollower[]
+  teamMemberships    TeamMember[]
+  experiments        Experiment[]
+}
+
+model Strategy {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  type        String   @default("custom")
+  visibility  String   @default("private")
+  status      String   @default("draft")
+  definition  String
+  parameters  String
+  authorId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  author         User               @relation(fields: [authorId], references: [id])
+  versions       StrategyVersion[]
+  backtests      Backtest[]
+  comments       StrategyComment[]
+  likes          StrategyLike[]
+  followers      StrategyFollower[]
+  shares         StrategyShare[]
+  optimizations  OptimizationJob[]
+}
+
+model StrategyVersion {
+  id           String   @id @default(cuid())
+  strategyId   String
+  version      String
+  changes      String?
+  definition   String
+  parameters   String
+  performance  String?
+  authorId     String
+  createdAt    DateTime @default(now())
+
+  strategy Strategy @relation(fields: [strategyId], references: [id], onDelete: Cascade)
+  author   User     @relation(fields: [authorId], references: [id])
+}
+
+model Backtest {
+  id              String    @id @default(cuid())
+  strategyId      String
+  strategyVersion String?
+  status          String    @default("queued")
+  progress        Int       @default(0)
+  asset           String    @default("stock")
+  symbol          String
+  exchange        String?
+  timeframe       String    @default("1D")
+  startDate       DateTime
+  endDate         DateTime
+  initialCapital  Float     @default(100000)
+  commission      Float     @default(0.001)
+  slippage        Float     @default(0.0005)
+  spread          Float     @default(0)
+  leverage        Float     @default(1)
+  positionSizing  String    @default("fixed")
+  riskPerTrade    Float?
+  maxPositions    Int       @default(1)
+  benchmark       String?
+  currency        String    @default("USD")
+  results         String?
+  error           String?
+  logs            String?
+  executionTime   Int?
+  startedAt       DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  userId          String
+
+  strategy Strategy @relation(fields: [strategyId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+}
+
+model OptimizationJob {
+  id          String    @id @default(cuid())
+  strategyId  String
+  method      String    @default("grid")
+  status      String    @default("queued")
+  progress    Int       @default(0)
+  parameters  String
+  results     String?
+  bestParams  String?
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  strategy Strategy @relation(fields: [strategyId], references: [id])
+}
+
+model Team {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members TeamMember[]
+}
+
+model TeamMember {
+  id       String   @id @default(cuid())
+  teamId   String
+  userId   String
+  role     String   @default("viewer")
+  joinedAt DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([teamId, userId])
+}
+
+model StrategyComment {
+  id         String   @id @default(cuid())
+  strategyId String
+  userId     String
+  content    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  strategy Strategy @relation(fields: [strategyId], references: [id], onDelete: Cascade)
+  author   User     @relation(fields: [userId], references: [id])
+}
+
+model StrategyLike {
+  id         String   @id @default(cuid())
+  strategyId String
+  userId     String
+  createdAt  DateTime @default(now())
+
+  strategy Strategy @relation(fields: [strategyId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id])
+
+  @@unique([strategyId, userId])
+}
+
+model StrategyFollower {
+  id         String   @id @default(cuid())
+  strategyId String
+  userId     String
+  createdAt  DateTime @default(now())
+
+  strategy Strategy @relation(fields: [strategyId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id])
+
+  @@unique([strategyId, userId])
+}
+
+model StrategyShare {
+  id         String   @id @default(cuid())
+  strategyId String
+  userId     String
+  sharedWith String?
+  createdAt  DateTime @default(now())
+
+  strategy Strategy @relation(fields: [strategyId], references: [id], onDelete: Cascade)
+}
+
+model Experiment {
+  id         String   @id @default(cuid())
+  strategyId String?
+  title      String
+  hypothesis String?
+  change     String?
+  result     String?
+  conclusion String?
+  authorId   String
+  createdAt  DateTime @default(now())
+
+  author User @relation(fields: [authorId], references: [id])
+}

@@ -1,0 +1,22 @@
+node_modules/
+.next/
+.git/
+*.db
+*.db-journal
+.env
+.env.local
+.DS_Store
+node_modules/
+node_modules/
+node_modules
+.next
+*.sqlite
+
+# Backup and patch files
+.git-backup/
+*.bak
+apply_patches.py
+
+.git-backup/
+*.bak
+apply_patches.py

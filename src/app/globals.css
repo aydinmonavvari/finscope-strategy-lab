@@ -1,0 +1,213 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-finscope-navy: #071A2B;
+  --color-finscope-dark: #0B2239;
+  --color-finscope-darker: #051220;
+  --color-finscope-green: #19C37D;
+  --color-finscope-emerald: #00A878;
+  --color-finscope-red: #EF4444;
+  --color-finscope-amber: #F59E0B;
+  --color-finscope-blue: #3B82F6;
+  --color-finscope-glass: rgba(11, 34, 57, 0.6);
+  --color-finscope-glass-light: rgba(11, 34, 57, 0.3);
+  --color-finscope-glass-border: rgba(25, 195, 125, 0.15);
+  --color-finscope-glass-border-hover: rgba(25, 195, 125, 0.3);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: #071A2B;
+  --foreground: #E2E8F0;
+  --card: rgba(11, 34, 57, 0.6);
+  --card-foreground: #E2E8F0;
+  --popover: #0B2239;
+  --popover-foreground: #E2E8F0;
+  --primary: #19C37D;
+  --primary-foreground: #071A2B;
+  --secondary: rgba(25, 195, 125, 0.1);
+  --secondary-foreground: #19C37D;
+  --muted: rgba(11, 34, 57, 0.4);
+  --muted-foreground: #94A3B8;
+  --accent: rgba(25, 195, 125, 0.15);
+  --accent-foreground: #19C37D;
+  --destructive: #EF4444;
+  --border: rgba(25, 195, 125, 0.12);
+  --input: rgba(25, 195, 125, 0.12);
+  --ring: #19C37D;
+  --chart-1: #19C37D;
+  --chart-2: #3B82F6;
+  --chart-3: #F59E0B;
+  --chart-4: #8B5CF6;
+  --chart-5: #EF4444;
+  --sidebar: #051220;
+  --sidebar-foreground: #94A3B8;
+  --sidebar-primary: #19C37D;
+  --sidebar-primary-foreground: #071A2B;
+  --sidebar-accent: rgba(25, 195, 125, 0.1);
+  --sidebar-accent-foreground: #19C37D;
+  --sidebar-border: rgba(25, 195, 125, 0.1);
+  --sidebar-ring: #19C37D;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-geist-sans), system-ui, sans-serif;
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    background: rgba(11, 34, 57, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(25, 195, 125, 0.12);
+    border-radius: 12px;
+  }
+  .glass-card-hover {
+    background: rgba(11, 34, 57, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(25, 195, 125, 0.12);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+  .glass-card-hover:hover {
+    border-color: rgba(25, 195, 125, 0.3);
+    box-shadow: 0 0 30px rgba(25, 195, 125, 0.08);
+    transform: translateY(-1px);
+  }
+  .finscope-gradient {
+    background: linear-gradient(135deg, #071A2B 0%, #0B2239 50%, #071A2B 100%);
+  }
+  .finscope-glow {
+    box-shadow: 0 0 20px rgba(25, 195, 125, 0.15), 0 0 60px rgba(25, 195, 125, 0.05);
+  }
+  .finscope-text-glow {
+    text-shadow: 0 0 20px rgba(25, 195, 125, 0.5);
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(25, 195, 125, 0.2) transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(25, 195, 125, 0.2);
+    border-radius: 3px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgba(25, 195, 125, 0.4);
+  }
+  .pulse-green {
+    animation: pulseGreen 2s ease-in-out infinite;
+  }
+}
+
+@keyframes pulseGreen {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes gridMove {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(50px, 50px); }
+}
+
+@keyframes particleFloat {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+}
+
+@keyframes candleMove {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+@keyframes dataStream {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 100%; }
+}
+
+@keyframes bgPulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-green, [style*="animation"] {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* RTL Support */
+[dir="rtl"] .sidebar-section-title {
+  text-align: right;
+}
+
+[dir="rtl"] .metric-value {
+  direction: ltr;
+  text-align: right;
+}
