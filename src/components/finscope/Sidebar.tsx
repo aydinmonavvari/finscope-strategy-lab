@@ -23,6 +23,7 @@ import {
   UsersRound,
   MessageSquare,
   FileText,
+  X,
 } from 'lucide-react';
 import { useAppStore, type PageId } from '@/lib/store';
 import { t } from '@/lib/i18n';
@@ -33,6 +34,7 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from '@/components/ui/tooltip';
+import { Button } from '@/components/ui/button';
 import type { LucideIcon } from 'lucide-react';
 
 interface NavItem {
@@ -99,15 +101,20 @@ const navGroups: NavGroup[] = [
   },
 ];
 
-function NavItemButton({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
+function NavItemButton({ item, collapsed, onClick }: { item: NavItem; collapsed: boolean; onClick?: () => void }) {
   const { activePage, setActivePage, locale } = useAppStore();
   const isActive = activePage === item.pageId;
   const Icon = item.icon;
   const label = t(item.labelKey, locale);
 
+  const handleClick = () => {
+    setActivePage(item.pageId);
+    onClick?.();
+  };
+
   const buttonContent = (
     <button
-      onClick={() => setActivePage(item.pageId)}
+      onClick={handleClick}
       className={cn(
         'group relative flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200',
         collapsed && 'justify-center px-2',
@@ -160,16 +167,11 @@ function NavItemButton({ item, collapsed }: { item: NavItem; collapsed: boolean 
   return buttonContent;
 }
 
-export default function Sidebar() {
+function SidebarContent({ onNavClick }: { onNavClick?: () => void }) {
   const { sidebarCollapsed, locale } = useAppStore();
 
   return (
-    <motion.div
-      className="fixed left-0 top-0 z-20 flex h-full flex-col border-r border-[rgba(25,195,125,0.1)] bg-[#051220]"
-      animate={{ width: sidebarCollapsed ? 68 : 260 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-      role="complementary"
-    >
+    <div className="flex h-full flex-col">
       {/* Brand / Logo */}
       <div className={cn('flex h-14 shrink-0 items-center border-b border-[rgba(25,195,125,0.08)] px-4', sidebarCollapsed && 'justify-center px-2')}>
         <AnimatePresence mode="wait">
@@ -234,6 +236,7 @@ export default function Sidebar() {
                 key={item.pageId}
                 item={item}
                 collapsed={sidebarCollapsed}
+                onClick={onNavClick}
               />
             ))}
           </div>
@@ -275,6 +278,74 @@ export default function Sidebar() {
           )}
         </AnimatePresence>
       </div>
-    </motion.div>
+    </div>
+  );
+}
+
+export default function Sidebar() {
+  const { sidebarCollapsed, mobileSidebarOpen, setMobileSidebarOpen } = useAppStore();
+
+  const closeMobileSidebar = () => setMobileSidebarOpen(false);
+
+  // Lock body scroll when mobile sidebar is open
+  useEffect(() => {
+    if (mobileSidebarOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileSidebarOpen]);
+
+  return (
+    <>
+      {/* Desktop sidebar — always visible, collapsible */}
+      <motion.div
+        className="hidden md:flex fixed left-0 top-0 z-20 h-full flex-col border-r border-[rgba(25,195,125,0.1)] bg-[#051220]"
+        animate={{ width: sidebarCollapsed ? 68 : 260 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        role="complementary"
+      >
+        <SidebarContent />
+      </motion.div>
+
+      {/* Mobile overlay backdrop */}
+      <AnimatePresence>
+        {mobileSidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-30 bg-black/60 md:hidden"
+            onClick={closeMobileSidebar}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Mobile sidebar — slide-in drawer */}
+      <AnimatePresence>
+        {mobileSidebarOpen && (
+          <motion.div
+            initial={{ x: -280 }}
+            animate={{ x: 0 }}
+            exit={{ x: -280 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className="fixed left-0 top-0 z-40 flex h-full w-[280px] flex-col border-r border-[rgba(25,195,125,0.1)] bg-[#051220] shadow-2xl shadow-black/50 md:hidden"
+            role="complementary"
+          >
+            {/* Close button */}
+            <button
+              onClick={closeMobileSidebar}
+              className="absolute right-2 top-3 z-50 flex h-10 w-10 items-center justify-center rounded-lg text-[#94A3B8] hover:bg-white/10 hover:text-white transition-colors"
+              aria-label="Close menu"
+            >
+              <X className="size-5" />
+            </button>
+            <SidebarContent onNavClick={closeMobileSidebar} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
